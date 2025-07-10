@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { AlertTriangle, Loader, X } from 'react-feather';
+import { TriangleAlert, Loader, X } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 
 import UpdateUserRequest from '../../models/user/UpdateUserRequest';
@@ -115,7 +115,7 @@ export default function UsersTable({ data, isLoading }: UsersTableProps) {
       </div>
       {/* Delete User Modal */}
       <Modal show={deleteShow}>
-        <AlertTriangle size={30} className="text-red-500 mr-5 fixed" />
+        <TriangleAlert size={30} className="text-red-500 mr-5 fixed" />
         <div className="ml-10">
           <h3 className="mb-2 font-semibold">Delete User</h3>
           <hr />

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { AlertTriangle, Loader, X } from 'react-feather';
+import { TriangleAlert, Loader, X } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 
 import useAuth from '../../hooks/useAuth';
@@ -116,7 +116,7 @@ export default function ContentsTable({
 
       {/* Delete Content Modal */}
       <Modal show={deleteShow}>
-        <AlertTriangle size={30} className="text-red-500 mr-5 fixed" />
+        <TriangleAlert size={30} className="text-red-500 mr-5 fixed" />
         <div className="ml-10">
           <h3 className="mb-2 font-semibold">Delete Content</h3>
           <hr />

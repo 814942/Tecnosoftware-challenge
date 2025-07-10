@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { ChevronRight } from 'react-feather';
+import { ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface SidebarItemProps {

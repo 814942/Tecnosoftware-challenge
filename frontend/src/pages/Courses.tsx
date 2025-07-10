@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Loader, Plus, X } from 'react-feather';
+import { Loader, Plus, X } from 'lucide-react';
 import { useForm } from 'react-hook-form';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import CoursesTable from '../components/courses/CoursesTable';
 import Layout from '../components/layout';
@@ -18,17 +18,15 @@ export default function Courses() {
   const [error, setError] = useState<string>();
 
   const { authenticatedUser } = useAuth();
-  const { data, isLoading } = useQuery(
-    ['courses', name, description],
-    () =>
+  const { data, isLoading } = useQuery({
+    queryKey: ['courses', name, description],
+    queryFn: () =>
       courseService.findAll({
         name: name || undefined,
         description: description || undefined,
       }),
-    {
-      refetchInterval: 1000,
-    },
-  );
+    gcTime: 1000,
+  });
 
   const {
     register,

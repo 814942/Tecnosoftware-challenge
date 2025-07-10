@@ -1,6 +1,5 @@
-import { BookOpen, Home, LogOut, Users } from 'react-feather';
-import { useHistory } from 'react-router';
-import { Link } from 'react-router-dom';
+import { BookOpen, Home, LogOut, Users } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 
 import useAuth from '../../hooks/useAuth';
 import authService from '../../services/AuthService';
@@ -11,14 +10,14 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ className }: SidebarProps) {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const { authenticatedUser, setAuthenticatedUser } = useAuth();
 
   const handleLogout = async () => {
     await authService.logout();
     setAuthenticatedUser(null);
-    history.push('/login');
+    navigate('/login');
   };
 
   return (
