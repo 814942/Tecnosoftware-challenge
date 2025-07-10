@@ -11,7 +11,7 @@ export default function Modal({ children, className, show }: ModalProps) {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    let timeout: NodeJS.Timeout;
+    let timeout: number;
 
     if (show) {
       setIsVisible(true);
