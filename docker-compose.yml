@@ -1,11 +1,15 @@
 services:
   database:
-    image: postgres:alpine
+    image: postgres:17.5
     container_name: database
     environment:
-      POSTGRES_DB: carna-database
-      POSTGRES_USER: carna
-      POSTGRES_PASSWORD: IjSJmKN1fc#DZBL*NHbVoxIh65JvsFFDO@so
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - app-network
 
   backend:
     container_name: backend
@@ -14,14 +18,12 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - database
-    environment:
-      DATABASE_HOST: database
-      DATABASE_PORT: 5432
-      DATABASE_USERNAME: carna
-      DATABASE_PASSWORD: IjSJmKN1fc#DZBL*NHbVoxIh65JvsFFDO@so
-      DATABASE_NAME: "carna-database"
-      JWT_SECRET: 4125442A472D4B6150645367556B58703273357638792F423F4528482B4D6251
-      JWT_REFRESH_SECRET: 576E5A7134743777217A25432A462D4A614E645267556B58703273357538782F
+    env_file:
+      - ./backend/.env
+    ports:
+      - "${PORT:-4000}:4000"
+    networks:
+      - app-network
 
   frontend:
     container_name: frontend
@@ -32,3 +34,11 @@ services:
       - "3000:80"
     depends_on:
       - backend
+    networks:
+      - app-network
+
+volumes:
+  db_data:
+
+networks:
+  app-network:
