@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { ILike } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { ILike, Repository } from 'typeorm';
 
 import { CreateCourseDto, UpdateCourseDto } from './course.dto';
 import { Course } from './course.entity';
@@ -7,18 +8,24 @@ import { CourseQuery } from './course.query';
 
 @Injectable()
 export class CourseService {
+  constructor(
+    @InjectRepository(Course)
+    private readonly courseRepository: Repository<Course>,
+  ) {}
+
   async save(createCourseDto: CreateCourseDto): Promise<Course> {
-    return await Course.create({
+    const courseEntity = this.courseRepository.create({
       ...createCourseDto,
       dateCreated: new Date(),
-    }).save();
+    });
+    return await this.courseRepository.save(courseEntity);
   }
 
   async findAll(courseQuery: CourseQuery): Promise<Course[]> {
     Object.keys(courseQuery).forEach((key) => {
       courseQuery[key] = ILike(`%${courseQuery[key]}%`);
     });
-    return await Course.find({
+    return await this.courseRepository.find({
       where: courseQuery,
       order: {
         name: 'ASC',
@@ -28,7 +35,7 @@ export class CourseService {
   }
 
   async findById(id: string): Promise<Course> {
-    const course = await Course.findOne(id);
+    const course = await this.courseRepository.findOne({ where: { id } });
     if (!course) {
       throw new HttpException(
         `Could not find course with matching id ${id}`,
@@ -40,16 +47,20 @@ export class CourseService {
 
   async update(id: string, updateCourseDto: UpdateCourseDto): Promise<Course> {
     const course = await this.findById(id);
-    return await Course.create({ id: course.id, ...updateCourseDto }).save();
+    const courseEntity = this.courseRepository.create({
+      id: course.id,
+      ...updateCourseDto,
+    });
+    return await this.courseRepository.save(courseEntity);
   }
 
   async delete(id: string): Promise<string> {
     const course = await this.findById(id);
-    await Course.delete(course);
+    await this.courseRepository.delete({ id: course.id });
     return id;
   }
 
   async count(): Promise<number> {
-    return await Course.count();
+    return await this.courseRepository.count();
   }
 }

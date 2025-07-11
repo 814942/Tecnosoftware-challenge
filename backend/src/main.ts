@@ -29,6 +29,27 @@ async function bootstrap() {
   app.use(cookieParser());
   app.useGlobalPipes(new ValidationPipe());
 
+  // Obtener whitelist y asignar valor predeterminado si es undefined
+  const whitelist = process.env.CLIENT_URL_CONNECTION;
+
+  // Parsear whitelist solo si no está vacía
+  const whitelistParsed = whitelist ? whitelist.split(',') : [];
+
+  // CORS config
+  app.enableCors({
+    origin: (origin, callback) => {
+      if (whitelistParsed.indexOf(origin) !== -1 || !origin) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    allowedHeaders:
+      'Content-Type, Accept, Authorization, Access-Control-Allow-Credentials, Access-Control-Allow-Origins',
+    credentials: true,
+  });
+
   const config = new DocumentBuilder()
     .setTitle('Carna Project API')
     .setDescription('Carna Project API Documentation')
